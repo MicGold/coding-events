@@ -8,8 +8,6 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Chris Bay
@@ -28,12 +26,13 @@ public class EventController {
     @GetMapping("create")
     public String displayCreateEventForm(Model model) {
         model.addAttribute("title", "Create Event");
+        model.addAttribute(new Event());
         return "events/create";
     }
 
     @PostMapping("create")
-    public String processCreateEventForm(@ModelAttribute @Valid Event newEvent, Errors errors, Model model) {
-
+    public String processCreateEventForm(@ModelAttribute @Valid Event newEvent,
+                                         Errors errors, Model model) {
         if(errors.hasErrors()) {
             model.addAttribute("title", "Create Event");
             model.addAttribute("errorMsg", "Bad data!");
@@ -46,18 +45,20 @@ public class EventController {
 
     @GetMapping("delete")
     public String displayDeleteEventForm(Model model) {
-        model.addAttribute("title", "Delete Event");
-        model.addAttribute("event", EventData.getAll());
+        model.addAttribute("title", "Delete Events");
+        model.addAttribute("events", EventData.getAll());
         return "events/delete";
     }
 
     @PostMapping("delete")
-    public String processDeleteEventForm(@RequestParam(required = false) int[] eventIds) {
-       if(eventIds != null) {
-           for(int id : eventIds) {
-               EventData.remove(id);
-           }
-       }
+    public String processDeleteEventsForm(@RequestParam(required = false) int[] eventIds) {
+
+        if (eventIds != null) {
+            for (int id : eventIds) {
+                EventData.remove(id);
+            }
+        }
+
         return "redirect:";
     }
 
